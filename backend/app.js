@@ -4,6 +4,9 @@ const helmet = require('helmet');
 const path = require('path');
 const cors = require('cors');
 
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
+
 const cookieParser = require('cookie-parser');
 
 const helpers = require('./helpers');
@@ -49,7 +52,34 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+/** Swagger Initialization - START */
+const swaggerOption = {
+  swaggerDefinition: (swaggerJsdoc.Options = {
+    info: {
+      version : "1.0.0",
+      title: "idurar-backend",
+      description: "API documentation",
+      contact: {
+        name: "Developer",
+      }
+    },
+  }),
+  apis: ["app.js", "./routes/*.js"],
+};
+
+const swaggerDocs = swaggerJsdoc(swaggerOption);
+app.use("/rest-api", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+/** Swagger Initialization - END */
+
+
+
+
+
+
 // pass variables to our templates + all requests
+
+
+
 
 app.use((req, res, next) => {
   res.locals.h = helpers;
